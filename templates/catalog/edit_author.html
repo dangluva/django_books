@@ -1,0 +1,27 @@
+{% extends 'catalog/base.html' %}
+{% block content %}
+<div class="row text-start lh-2">
+    <h3>Change data about the author</h3>
+</div>
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <table class="text-start">
+        {% for field in form %}
+        <tr>
+            <th>
+                {{ field.label_tag }}
+                {{ field.errors }}
+            </th>
+            <th>
+                {{ field }}
+            </th>
+        </tr>
+        {% endfor %}
+        <tr>
+            <th>
+                <button type="submit">Save</button>
+            </th>
+        </tr>
+    </table>
+</form>
+{% endblock %}

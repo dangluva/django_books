@@ -1,0 +1,9 @@
+{% extends 'catalog/base.html' %}
+{% block content %}
+<h1>Book Deletion</h1>
+<p>Are you sure you want to delete {{ book }}?</p>
+<form action="" method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <input type="submit" value="DELETE">
+</form>
+{% endblock %}

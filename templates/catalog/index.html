@@ -1,0 +1,52 @@
+{% extends "catalog/base.html" %}
+
+{% block title %}World of Books{% endblock title %}
+
+{% block header %}
+<h5>{{ text_head }}</h5>
+{% endblock header %}
+
+{% block content %}
+<div class="container-fluid my-2">
+    <div class="row bg-success text-white mx-2">
+        <div class="col text-center">
+            <p>Welcome to the website <em>World of Books</em>. It has been developed in Python</p>
+        </div>
+    </div>
+
+    <div class="row text-center text-dark lh-2">
+        <h4>Data from Database.</h4>
+    </div>
+    <div class="row my-2 text-white">
+        <div class="col mx-2 bg-primary">
+            No. of books - {{ num_books }}
+        </div>
+        <div class="col mx-2 bg-primary">
+            Available in stock - {{ num_instances }}
+        </div>
+        <div class="col mx-2 bg-primary">
+            Number of authors - {{ num_authors }}
+        </div>
+    </div>
+    <div class="row text-center text-dark lh-2">
+        <h3>Books</h3>
+    </div>
+    {% if num_books > 0 %}
+    <div class="row my-2">
+        {% for obj in books %}
+        <div class="card" style="width: 9rem;">
+            <img src="{{ obj.photo.url }}" class="card-img-top">
+            <div class="card-body">
+                <p class="card-text small">
+                    {{ obj.title }}, Price: {{ obj.price }} EUR.
+                </p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    <div class="row text-center text-dark lh-2">
+        <h6>Number of times visited this website: {{ num_visits }}</h6>
+    </div>
+</div>
+{% endblock content %}
