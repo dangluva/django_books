@@ -1,42 +1,49 @@
 {% extends 'catalog/base.html' %}
+
 {% block content %}
-<div class="row text-start lh-2">
-    <h5>List of authors to edit</h5>
-</div>
-<div class="row">
-    <div class="col-2"></div>
-    <a href="/authors_add/{{authors_add}}">Add author</a>
-    <div class="col-8">
-        <table class="table table-striped table-bordered text-start">
-            <thead>
-            <tr>
-                <th>id</th>
-                <th>Name</th>
-                <th>Last Name</th>
-                <th>Edit</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% if author %}
-            {% for author in author.all %}
-            <tr>
-                <td>{{ forloop.counter }}</td>
-                <td>{{ author.first_name }}</td>
-                <td>{{ author.last_name }}</td>
-                <td>
-                    <a href="/edit_author/{{author.id}}">Change</a>
-                    <a href="/delete_author/{{author.id}}">Delete</a>
-                </td>
-            </tr>
-            {% endfor %}
-            {% else %}
-            <tr>
-                <td colspan="4">There are no authors in the database.</td>
-            </tr>
-            {% endif %}
-            </tbody>
-        </table>
+<div class="container mt-4">
+    <div class="row mb-4">
+        <div class="col text-start">
+            <h5>Manage Authors</h5>
+        </div>
+        <div class="col text-end">
+            <a href="{% url 'authors-add' %}" class="btn btn-warning">Add Author</a>
+        </div>
     </div>
-    <div class="col-2"></div>
+    <div class="row">
+        <div class="col">
+            {% if authors %}
+            <div class="table-responsive">
+                <table class="table table-striped table-bordered text-start">
+                    <thead class="table-light">
+                    <tr>
+                        <th>#</th>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for author in authors %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ author.first_name }}</td>
+                        <td>{{ author.last_name }}</td>
+                        <td>
+                            <a href="{% url 'edit-author' author.id %}" class="btn btn-sm btn-primary">Edit</a>
+                            <a href="{% url 'delete-author' author.id %}" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this author?');">Delete</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="alert alert-info text-center" role="alert">
+                No authors found in the database. Click "Add Author" to get started.
+            </div>
+            {% endif %}
+        </div>
+    </div>
 </div>
 {% endblock %}

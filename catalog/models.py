@@ -90,16 +90,15 @@ class Book(models.Model):
     isbn = models.CharField(max_length=13,
                             help_text="It must contain 13 symbols",
                             verbose_name="ISBN of the Book")
-    price = models.DecimalField(decimal_places=2,
-                                max_digits=7,
-                                help_text="Enter the price of the book",
-                                verbose_name="Price in EUR")
     photo = models.ImageField(upload_to="images",
                               help_text="Enter the cover of the book",
                               verbose_name="Book Cover")
 
+    class Meta:
+        ordering = ['title']  # Default ordering by book title
+
     def display_author(self):
-        return ','.join([author.last_name for author in self.author.all()])
+        return ', '.join([f"{author.first_name} {author.last_name}" for author in self.author.all()])
 
     display_author.short_description = 'Authors'
 

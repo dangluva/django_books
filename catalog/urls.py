@@ -1,21 +1,28 @@
 from django.urls import path
 from . import views
+from django.contrib.auth.decorators import login_required
 
 urlpatterns = [
     path('', views.index, name='index'),
-    path('books/', views.BookListView.as_view(), name='books'),
-    path('books/<int:pk>/', views.BookDetailView.as_view(), name='book-detail'),
-    path('authors/', views.AuthorListView.as_view(), name='authors-list'),
-    path('authors/<int:pk>/', views.AuthorDetailView.as_view(), name='authors-detail'),
     path('about/', views.about, name='about'),
     path('contacts/', views.contacts, name='contacts'),
-    path('mybooks/', views.LoanedBooksByUserListView.as_view(), name='my-borrowed-books'),
-    path('edit_authors/', views.edit_authors, name='edit_authors'),
-    path('authors_add/', views.add_author, name="authors_add"),
-    path('delete_author/<int:id>', views.delete_author, name="delete_author"),
-    path('edit_author/<int:id>', views.edit_author, name="edit_author"),
-    path('edit_books/', views.edit_books, name="edit_books"),
-    path('book/create/', views.BookCreate.as_view(), name="book_create"),
-    path('book/update/<int:pk>/', views.BookUpdate.as_view(), name="book_update"),
-    path('book/delete/<int:pk>/', views.BookDelete.as_view(), name="book_delete"),
+
+    # Book-related URLs
+    path('books/', login_required(views.BookListView.as_view()), name='books'),
+    path('books/<int:pk>/', login_required(views.BookDetailView.as_view()), name='book-detail'),
+    path('book/create/', login_required(views.BookCreate.as_view()), name='book-create'),
+    path('edit_books/', login_required(views.edit_books), name='edit-books'),
+    path('book/update/<int:pk>/', login_required(views.BookUpdate.as_view()), name='book-update'),
+    path('book/delete/<int:pk>/', login_required(views.BookDelete.as_view()), name='book-delete'),
+
+    # Author-related URLs
+    path('authors/', login_required(views.AuthorListView.as_view()), name='authors-list'),
+    path('authors/<int:pk>/', login_required(views.AuthorDetailView.as_view()), name='authors-detail'),
+    path('authors_add/', login_required(views.add_author), name='authors-add'),
+    path('edit_authors/', login_required(views.edit_authors), name='edit-authors'),
+    path('edit_author/<int:id>/', login_required(views.edit_author), name='edit-author'),
+    path('delete_author/<int:id>/', login_required(views.delete_author), name='delete-author'),
+
+    # User-specific URLs
+    path('mybooks/', login_required(views.LoanedBooksByUserListView.as_view()), name='my-borrowed-books'),
 ]

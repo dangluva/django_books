@@ -1,24 +1,22 @@
 from pathlib import Path
-import os, environ, logging.config
+import os
+from dotenv import load_dotenv
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
+# Load environment variables from .env file
 BASE_DIR = Path(__file__).resolve().parent.parent
-
-# Initialise environment variables
-env = environ.Env()
-environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
+load_dotenv(os.path.join(BASE_DIR, '.env'))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env('SECRET_KEY', default='django-insecure-@h3y=d4wtntb01wa!f7rfnd*=z@^p534@8m)elc6htvq@r=e#@')
+SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-@h3y=d4wtntb01wa!f7rfnd*=z@^p534@8m)elc6htvq@r=e#@')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env.bool('DEBUG', default=True)
+DEBUG = False
 # DEBUG = bool(os.environ.get('DJANGO_DEBUG', True))
 
-ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=[])
+ALLOWED_HOSTS = ['127.0.0.1']
 
 # Application definition
 
@@ -108,11 +106,13 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static'),
-]
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+
+# Add this line to specify the root directory for collectstatic
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
@@ -124,8 +124,8 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
-EMAIL_HOST_USER = env('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 LOGGING = {

@@ -1,10 +1,60 @@
 {% extends 'catalog/base.html' %}
 {% block content %}
-<form action="" method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    <table class="text-start">
-        {{ form.as_table }}
-    </table>
-    <input type="submit" value="SAVE">
-</form>
-{% endblock %}
+{% block head %}
+<style>
+    /* Ensure all input fields, textareas, and selects take full width of the table cell */
+    input[type="text"],
+    input[type="number"],
+    input[type="email"],
+    input[type="file"],
+    select,
+    textarea {
+        width: 100%; /* Makes the input fields take the full width of the table cell */
+        box-sizing: border-box; /* Include padding and borders within the width */
+    }
+
+    /* Ensure the file input and image are left-aligned */
+    td {
+        text-align: left; /* Ensures all table data cells have left-aligned content */
+        vertical-align: middle; /* Vertically center the content */
+    }
+
+    /* Additional styling for images */
+    img {
+        max-height: 200px;
+        display: block;
+        margin: 0;
+        padding: 0;
+    }
+</style>
+{% endblock head%}
+
+
+<div class="container mt-4">
+    <!-- Use the context variable to display the correct heading -->
+    <h2 class="mb-4">{{ heading }}</h2>
+    <form action="" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <table class="table table-bordered text-start">
+            {% for field in form %}
+            <tr>
+                <th style="width: 30%; vertical-align: middle; text-align: left;">
+                    {{ field.label_tag }}
+                </th>
+                <td style="width: 70%;">
+                    {{ field }}
+                    {% if field.errors %}
+                    <div class="text-danger mt-1">
+                        {{ field.errors }}
+                    </div>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+        <div class="text-center mt-3">
+            <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+    </form>
+</div>
+{% endblock content%}

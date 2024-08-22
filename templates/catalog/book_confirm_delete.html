@@ -1,9 +1,18 @@
 {% extends 'catalog/base.html' %}
 {% block content %}
-<h1>Book Deletion</h1>
-<p>Are you sure you want to delete {{ book }}?</p>
-<form action="" method="POST" enctype="multipart/form-data">
-    {% csrf_token %}
-    <input type="submit" value="DELETE">
-</form>
+<div class="container mt-4">
+    <h1 class="text-danger">Book Deletion</h1>
+    <p class="lead">Are you sure you want to delete the book <strong>{{ book.title }}</strong>?</p>
+
+    <!-- Confirmation Form -->
+    <form action="" method="POST" enctype="multipart/form-data" class="mt-3">
+        {% csrf_token %}
+        <div class="d-flex justify-content-center">
+            <!-- Cancel Button to navigate back -->
+            <a href="{% url 'edit_books' %}" class="btn btn-primary">Cancel</a>
+            <!-- Delete Button with distinct styling -->
+            <input type="submit" value="Delete" class="btn btn-danger me-2">
+        </div>
+    </form>
+</div>
 {% endblock %}

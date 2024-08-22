@@ -1,38 +1,57 @@
 {% extends 'catalog/base.html' %}
-{% block content %}
-{% if form.errors %}
-<p>Your username or password didn't match.</p>
-{% endif %}
-{% if next %}
-    {% if user.is_authenticated %}
-    <p>You don't have permission for this page. Enter other credentials.</p>
-    {% else %}
-    <p>Enter the system to see this page.</p>
-    {% endif %}
-{% endif %}
 
-<form method="post" action="{% url 'login' %}">
-    {% csrf_token %}
-    <div class="row my-2 text-center">
-        <div class="col-4">
-            <table class="table table-bordered my-2 text-start">
-                <tr>
-                    <td>{{ form.username.label_tag }}</td>
-                    <td>{{ form.username }}</td>
-                </tr>
-                <tr>
-                    <td>{{ form.password.label_tag }}</td>
-                    <td>{{ form.password }}</td>
-                </tr>
-            </table>
-        </div>
+{% block content %}
+<div class="container">
+    {% if user.is_authenticated %}
+    <!-- Message displayed if the user is already logged in -->
+    <div class="alert alert-success text-center" role="alert">
+        You are already logged in as <strong>{{ user.username }}</strong>.
+        <p><a href="{% url 'index' %}" class="btn btn-primary mt-3">Go to Homepage</a></p>
     </div>
-    <div class="row my-2 text-start">
-        <div class="col-4">
-            <input type="submit" value="Enter">
-            <input type="hidden" name="next" value="{{ next }}">
-            <p><a href="{% url 'password_reset' %}">Forgot your password?</a></p>
-        </div>
+    {% else %}
+    <!-- Error Handling -->
+    {% if form.errors %}
+    <div class="alert alert-danger" role="alert">
+        Your username or password didn’t match. Please try again.
     </div>
-</form>
+    {% endif %}
+
+    {% if next and next != request.path %}
+        <div class="alert alert-info" role="alert">
+            Please log in to access this page.
+        </div>
+    {% endif %}
+
+    <!-- Login Form -->
+    <form method="post" action="{% url 'login' %}">
+        {% csrf_token %}
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card my-4">
+                    <div class="card-header text-center">
+                        <h4>Login</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group mb-3">
+                            <label for="id_username">{{ form.username.label }}</label>
+                            {{ form.username }}
+                        </div>
+                        <div class="form-group mb-3">
+                            <label for="id_password">{{ form.password.label }}</label>
+                            {{ form.password }}
+                        </div>
+                        <input type="hidden" name="next" value="{{ next }}">
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">Log In</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center">
+                    <p><a href="{% url 'password_reset' %}">Forgot your password?</a></p>
+                </div>
+            </div>
+        </div>
+    </form>
+    {% endif %}
+</div>
 {% endblock %}

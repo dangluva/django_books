@@ -1,15 +1,55 @@
 {% extends 'catalog/base.html' %}
+
 {% block content %}
-<h1>Taken books</h1>
-{% if bookinstance_list %}
-{% for bookinst in bookinstance_list %}
-<div class="{% if bookinst.is_overdue %} text-danger{% endif %}">
-    <a href="{% url 'book-detail' bookinst.book.pk %}">
-        {{ bookinst.book.title }}</a>
-    {{ bookinst.due_back }}
+<div class="container mt-4">
+    <h1 class="mb-4">Borrowed Books</h1>
+
+    {% if bookinstance_list %}
+        <div class="row">
+            {% for bookinst in bookinstance_list %}
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body d-flex flex-column">
+                        <!-- Book Title -->
+                        <a href="{% url 'book-detail' bookinst.book.pk %}" class="text-decoration-none">
+                            <h5 class="card-title">{{ bookinst.book.title }}</h5>
+                        </a>
+
+                        <!-- Book Due Date -->
+                        <p class="card-text">Due back on: <strong>{{ bookinst.due_back|date:"F j, Y" }}</strong></p>
+
+                        <!-- Overdue Status with Icon -->
+                        {% if bookinst.is_overdue %}
+                            <p class="text-danger"><i class="fa fa-exclamation-triangle"></i> Overdue!</p>
+                        {% else %}
+                            <p class="text-success"><i class="fa fa-check-circle"></i> On time</p>
+                        {% endif %}
+
+                        <!-- Status with Conditional Coloring and Icon -->
+                        <div class="mt-auto">
+                            <p class="card-text">
+                                <strong>Status:</strong> 
+                                {% if bookinst.status.name == "Sold" %}
+                                    <span style="color: red; font-weight: bold;"><i class="fa fa-times-circle"></i> {{ bookinst.status.name }}</span>
+                                {% elif bookinst.status.name == "Ordered" %}
+                                    <span style="color: blue; font-weight: bold;"><i class="fa fa-truck"></i> {{ bookinst.status.name }}</span>
+                                {% else %}
+                                    <span style="color: green; font-weight: bold;"><i class="fa fa-book"></i> {{ bookinst.status.name }}</span>
+                                {% endif %}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-info" role="alert">
+            <h4 class="alert-heading">No Borrowed Books</h4>
+            <p>You currently do not have any borrowed books.</p>
+            <hr>
+            <p class="mb-0">Browse available books in our <a href="{% url 'books' %}">catalog</a>.</p>
+        </div>
+    {% endif %}
 </div>
-{% endfor %}
-{% else %}
-<p>There are no books with the status "ORDERED".</p>
-{% endif %}
-{% endblock%}
+{% endblock %}

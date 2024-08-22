@@ -1,6 +1,27 @@
 {% extends 'catalog/base.html' %}
 
 {% block content %}
-<p>You have successfully logged out.</p>
-<a href="{% url 'login' %}">Follow the link to enter the system.</a>
+<style>
+    @keyframes zoomInOut {
+        0%, 100% {
+            transform: scale(1);
+        }
+        50% {
+            transform: scale(1.2); /* Scale up by 20% */
+        }
+    }
+
+    .zoom-animation {
+        animation: zoomInOut 1.5s ease-in-out; /* Animation duration: 1 second */
+    }
+</style>
+
+<div class="container text-center mt-5">
+    <div class="alert alert-success zoom-animation" role="alert">
+        <h4 class="alert-heading">You have successfully logged out.</h4>
+        <p class="mb-3">Thank you for visiting! We hope to see you again soon.</p>
+    </div>
+    <p><a href="{% url 'login' %}" class="btn btn-primary">Log in again</a></p>
+    <p><a href="{% url 'index' %}" class="btn btn-link">Return to Homepage</a></p>
+</div>
 {% endblock %}

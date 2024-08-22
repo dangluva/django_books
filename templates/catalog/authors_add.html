@@ -1,17 +1,67 @@
 {% extends 'catalog/base.html' %}
+
 {% block content %}
-<h5>Add author to the database</h5>
-<form action="" method="POST" enctype="multipart/form-data">
-    {% csrf_token %}
-    <div class="row">
-        <div class="col-2"></div>
-        <div class="col-8">
-            <table class="table text-start">
-                {{ form }}
-            </table>
+<div class="container mt-4">
+    <h2 class="mb-4 text-center">Add Author to the Database</h2>
+    <form action="" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <table class="table table-bordered text-start w-100">
+            {% for field in form %}
+            <tr>
+                <th style="width: 30%; vertical-align: middle; text-align: left;">
+                    {{ field.label_tag }}
+                </th>
+                <td style="width: 70%;">
+                    {% if field.name == 'photo' %}
+                    <div class="d-flex align-items-center">
+                        <!-- Display the existing photo if available -->
+                        {% if author.photo and author.photo.url %}
+                            <img src="{{ author.photo.url }}" alt="Photo of {{ author.first_name }} {{ author.last_name }}" class="img-thumbnail me-3" style="max-height: 100px;">
+                        {% endif %}
+                        <!-- File input (Choose button) -->
+                        <div class="flex-grow-1">
+                            {{ field }}
+                        </div>
+                    </div>
+                    {% else %}
+                    <!-- Render other fields normally -->
+                    {{ field }}
+                    {% endif %}
+                    
+                    <!-- Display errors for all fields -->
+                    {% if field.errors %}
+                    <div class="text-danger mt-1">
+                        {% for error in field.errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+        <div class="text-center mt-3">
+            <button type="submit" class="btn btn-primary">Save</button>
         </div>
-        <div class="col-2"></div>
-    </div>
-    <input type="submit" value="Save">
-</form>
+    </form>
+</div>
+
+<style>
+    /* Ensure all input fields occupy the full width of the table cell */
+    input[type="text"],
+    input[type="number"],
+    input[type="email"],
+    input[type="file"],
+    input[type="date"],
+    select,
+    textarea {
+        width: 100%; /* Ensures full width inside the table cell */
+        box-sizing: border-box; /* Include padding and borders within the width */
+    }
+
+    /* Ensure the file input label (Author Photo) is left-aligned */
+    td {
+        text-align: left;
+    }
+</style>
 {% endblock %}

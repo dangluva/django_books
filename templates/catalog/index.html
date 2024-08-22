@@ -1,52 +1,51 @@
 {% extends "catalog/base.html" %}
 
-{% block title %}World of Books{% endblock title %}
-
-{% block header %}
-<h5>{{ text_head }}</h5>
-{% endblock header %}
-
 {% block content %}
 <div class="container-fluid my-2">
-    <div class="row bg-success text-white mx-2">
-        <div class="col text-center">
-            <p>Welcome to the website <em>World of Books</em>. It has been developed in Python</p>
+    <!-- Header Section -->
+    <div class="row">
+        <div class="col text-center text-dark py-2">
+            <h4>There are {{ num_books }} books and {{ num_authors }} authors in our database.</h4>
         </div>
     </div>
 
-    <div class="row text-center text-dark lh-2">
-        <h4>Data from Database.</h4>
-    </div>
-    <div class="row my-2 text-white">
-        <div class="col mx-2 bg-primary">
-            No. of books - {{ num_books }}
-        </div>
-        <div class="col mx-2 bg-primary">
-            Available in stock - {{ num_instances }}
-        </div>
-        <div class="col mx-2 bg-primary">
-            Number of authors - {{ num_authors }}
-        </div>
-    </div>
-    <div class="row text-center text-dark lh-2">
-        <h3>Books</h3>
-    </div>
-    {% if num_books > 0 %}
-    <div class="row my-2">
-        {% for obj in books %}
-        <div class="card" style="width: 9rem;">
-            <img src="{{ obj.photo.url }}" class="card-img-top">
-            <div class="card-body">
-                <p class="card-text small">
-                    {{ obj.title }}, Price: {{ obj.price }} EUR.
-                </p>
+    <!-- Books Display Section -->
+    <div class="row">
+        {% if page_obj.object_list %}
+            {% for book in page_obj.object_list %}
+            <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                <div class="card h-100">
+                    <!-- Make the entire card clickable by wrapping it in an anchor tag -->
+                    <a href="{% url 'book-detail' book.id %}" class="stretched-link text-decoration-none">
+                        <!-- Image Section -->
+                        <div class="d-flex justify-content-center align-items-center" style="height: 250px;">
+                            {% if book.photo %}
+                            <img src="{{ book.photo.url }}" class="img-fluid" alt="Cover of {{ book.title }}" style="max-height: 200px;">
+                            {% else %}
+                            <p>No image available</p>
+                            {% endif %}
+                        </div>
+                        <!-- Book Details Section -->
+                        <div class="card-body text-center">
+                            <h5 class="card-title">{{ book.title }}</h5>
+                            <p class="card-text small">
+                                {% if book.author.all %}
+                                    {% for author in book.author.all %}
+                                        {{ author.first_name }} {{ author.last_name }}{% if not forloop.last %}, {% endif %}
+                                    {% endfor %}
+                                {% else %}
+                                    <span class="text-muted">Unknown Author</span>
+                                {% endif %}
+                            </p>
+                        </div>
+                    </a>
+                </div>
             </div>
-        </div>
-        {% endfor %}
+            {% endfor %}
+        {% else %}
+        <p>No books available.</p>
+        {% endif %}
     </div>
-    {% endif %}
-    <div class="row text-center text-dark lh-2">
-        <h6>Number of times visited this website: {{ num_visits }}</h6>
-    </div>
+
 </div>
 {% endblock content %}

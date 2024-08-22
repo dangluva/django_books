@@ -1,54 +1,50 @@
 {% extends 'catalog/base.html' %}
-<head>
 {% load static %}
-</head>
+
 {% block content %}
-<div class="container-fluid">
-    <div class="row my-2 text-center">
-        <div class="col-5"></div>
-        <div class="col-1 text-center">
-            <img src="{% static 'images/SIS.jpg' %}" alt="SIS" style="width:300px">
+<div class="container mt-4">
+    <!-- Title and Subtitle with Professional Copywriting -->
+    <div class="row text-primary text-center mb-3">
+        <div class="col">
+            <h2>{{ name }}</h2>
         </div>
-        <div class="col-5"></div>
     </div>
-    <div class="row my-2 text-primary text-center">
-        <h3>{{ name }}</h3>
-    </div>
-    <div class="row my-2 text-muted text-center">
-        <h4>{{ text_head }}</h4>
-    </div>
-    <div class="row my-2"></div>
-    <div class="row my-2">
-        <!-- Empty columns on the left of the table -->
-        <div class="col-3"></div>
-        <div class="col-6">
-            <table class="table table-striped table-bordered text-start">
-                <thead>
-                <tr>
-                    <th>Address</th>
-                    <th>Telephone number</th>
-                    <th>Email</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td>{{ address }}</td>
-                    <td>{{ telephone_number }}</td>
-                    <td>{{ email }}</td>
-                </tr>
-                </tbody>
-            </table>
+
+    <!-- Contact Information Table with Improved Layout and Content -->
+    <div class="row justify-content-center mb-5">
+        <div class="col-md-10 col-lg-8">
+            <div class="card">
+                <div class="card-header bg-primary text-white text-center">
+                    <h4 class="mb-0">Contact Information</h4>
+                </div>
+                <div class="card-body">
+                    <table class="table table-borderless text-center">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Reach Us At</th>
+                                <th>Contact Number</th>
+                                <th>Email</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>{{ address }}</td>
+                                <td>{{ telephone_number }}</td>
+                                <td><a href="mailto:{{ email }}"><i class="fa fa-envelope"></i> {{ email }}</a></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
-        <!-- Empty columns on the right of the table -->
-        <div class="col-3"></div>
     </div>
-    <!-- Map -->
-    <div class="row my-2 text-center">
-        <div class="col-2"></div>
-        <div class="col-8">
-            <img src="{% static 'images/address.jpg' %}" class="img-fluid" alt="Address" style="width:300px">
+
+    <!-- Map Section with Subtle Enhancements -->
+    <div class="row justify-content-center mb-5">
+        <div class="col-auto text-center">
+            <img src="{% static 'images/address.jpg' %}" class="img-fluid rounded shadow-sm" alt="Our Location" style="max-width: 350px;">
+            <p class="text-muted mt-2">Find us at the above address for in-person consultations.</p>
         </div>
-        <div class="col-2"></div>
     </div>
 </div>
 {% endblock %}

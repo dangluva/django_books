@@ -1,55 +1,84 @@
 {% extends 'catalog/base.html' %}
 {% block content %}
-<div class="container text-start">
-    <div class="row my-2">
-        <h1>Title of the book - "{{ book.title }}"</h1>
-    </div>
-    <div class="row my-2">
-        <p><strong>Author:</strong></p>
-        {% for author in book.author.all %}
-        <a href="/authors/{{ author.id }}">{{ author.first_name }} {{ author.last_name }}</a>
-        {% endfor %}
-    </div>
-    <div class="row my-2 text-start">
-        <div class="col text-start">
-            <img src="{{ book.photo.url }}" alt="cover"
-                 style="max-height:200px; max-width:100px; display: block;">
-            <a href="{{ book.photo.url }}" class="btn btn-primary mt-2" target="_blank">Show</a>
-        </div>
-    </div>
-    <div class="row my-2">
-        <div class="col">
-            <p><strong>Price:</strong> {{ book.price }}</p>
-        </div>
-    </div>
-    <div class="row my-2">
-        <p><strong>Annotation:</strong> {{ book.summary }}</p>
-    </div>
-    <div class="row my-2">
-        <div class="col mx-2 bg-primary text-white">
-            <p><strong>Genre:</strong> {{ book.genre }}</p>
-        </div>
-        <div class="col mx-2 bg-primary text-white">
-            <p><strong>ISBN:</strong> {{ book.isbn }}</p>
-        </div>
-        <div class="col mx-2 bg-primary text-white">
-            <p><strong>Language:</strong> {{ book.language }}</p>
-        </div>
-        <div class="col mx-2 bg-primary text-white">
-            <p><strong>Publisher:</strong> {{ book.publisher }}</p>
-        </div>
-    </div>
-    <div style="margin-left:20px; margin-top:10px;">
-        <h4>No. of books in Database</h4>
-        {% for copy in book.bookinstance_set.all %}
-        <hr>
-        <p class="text-muted">
-            <strong>Inventory number:</strong> {{ copy.id }}
-        </p>
-        <p class="text-success">
-            <strong>Status of the book instance:</strong> {{ copy.status }}
-        </p>
-        {% endfor %}
-    </div>
+<div class="container mt-4">
+    <h1 class="mb-4">Book Details: "{{ book.title }}"</h1>
+
+    <table class="table table-bordered table-striped">
+        <!-- Book Title and Author -->
+        <tr>
+            <th scope="row">Title</th>
+            <td>{{ book.title }}</td>
+        </tr>
+        <tr>
+            <th scope="row">Author(s)</th>
+            <td>
+                {% for author in book.author.all %}
+                    <a href="{% url 'authors-detail' author.id %}">{{ author.first_name }} {{ author.last_name }}</a>{% if not forloop.last %}, {% endif %}
+                {% endfor %}
+            </td>
+        </tr>
+
+        <!-- Book Cover -->
+        <tr>
+            <th scope="row">Cover</th>
+            <td>
+                {% if book.photo %}
+                    <img src="{{ book.photo.url }}" alt="Cover of {{ book.title }}" class="img-fluid" style="max-height: 200px;">
+                    <div class="mt-2">
+                        <a href="{{ book.photo.url }}" class="btn btn-primary" target="_blank">View Full Cover</a>
+                    </div>
+                {% else %}
+                    <span class="text-muted">No cover available</span>
+                {% endif %}
+            </td>
+        </tr>
+
+        <!-- Genre, ISBN, Language, and Publisher -->
+        <tr>
+            <th scope="row">Genre</th>
+            <td>{{ book.genre }}</td>
+        </tr>
+        <tr>
+            <th scope="row">ISBN</th>
+            <td>{{ book.isbn }}</td>
+        </tr>
+        <tr>
+            <th scope="row">Language</th>
+            <td>{{ book.language }}</td>
+        </tr>
+        <tr>
+            <th scope="row">Publisher</th>
+            <td>{{ book.publisher }}</td>
+        </tr>
+
+        <!-- Book Summary -->
+        <tr>
+            <th scope="row">Annotation</th>
+            <td>{{ book.summary }}</td>
+        </tr>
+
+        <!-- Book Instances -->
+        {% if book.bookinstance_set.exists %}
+            {% for copy in book.bookinstance_set.all %}
+            <tr>
+                <th scope="row">Inventory Number</th>
+                <td>{{ copy.inv_num }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Status</th>
+                <td>
+                    <!-- Conditional styling based on status -->
+                    {% include "catalog/book_status.html" %}
+                </td>
+            </tr>
+            {% endfor %}
+        {% else %}
+            <tr>
+                <th scope="row">Copies Available</th>
+                <td class="text-muted">No copies available.</td>
+            </tr>
+        {% endif %}
+
+    </table>
 </div>
 {% endblock %}

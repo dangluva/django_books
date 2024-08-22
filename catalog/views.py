@@ -1,3 +1,4 @@
+from django.core.paginator import Paginator
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views import generic
 from django.shortcuts import render
@@ -5,8 +6,9 @@ from .models import Book, Author, BookInstance
 from django.views.generic import ListView, DetailView
 from .forms import FormAddAuthor, FormEditAuthor
 from django.urls import reverse, reverse_lazy
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponseNotFound
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
+
 
 
 class AuthorDetailView(DetailView):
@@ -15,7 +17,7 @@ class AuthorDetailView(DetailView):
 
 class AuthorListView(ListView):
     model = Author
-    paginate_by = 4
+    paginate_by = 5
 
 
 class BookDetailView(DetailView):
@@ -26,48 +28,65 @@ class BookDetailView(DetailView):
 class BookListView(ListView):
     model = Book
     context_object_name = 'books'
-    paginate_by = 3
+    paginate_by = 5
 
 
 class BookCreate(CreateView):
     model = Book
     fields = '__all__'
-    success_url = reverse_lazy('edit_books')
+    success_url = reverse_lazy('edit-books')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['heading'] = 'Create a New Book'
+        return context
 
 
 class BookUpdate(UpdateView):
     model = Book
     fields = '__all__'
-    success_url = reverse_lazy('edit_books')
+    success_url = reverse_lazy('edit-books')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['heading'] = 'Edit the Book'
+        return context
 
 
 class BookDelete(DeleteView):
     model = Book
-    success_url = reverse_lazy('edit_books')
+    success_url = reverse_lazy('edit-books')
 
 
 class LoanedBooksByUserListView(LoginRequiredMixin, generic.ListView):
     model = BookInstance
     template_name = 'catalog/bookinstance_list_borrowed_user.html'
-    paginate_by = 10
+    paginate_by = 5
 
     def get_queryset(self):
         return BookInstance.objects.filter(borrower=self.request.user).filter(status__exact='2').order_by('due_back')
 
 
 def index(request):
-    text_head = 'You can get e-books here.'
-    books = Book.objects.all()
-    num_books = Book.objects.all().count
-    num_instances = BookInstance.objects.all().count
+    # Get the list of books with pagination
+    book_list = Book.objects.all()
+    paginator = Paginator(book_list, 4)  # 4 books per page
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    # Calculate statistics
+    num_books = Book.objects.count()
+    num_instances = BookInstance.objects.count()
     num_instances_available = BookInstance.objects.filter(status__exact=2).count()
-    authors = Author.objects
+    authors = Author.objects.all()
     num_authors = Author.objects.count()
+
+    # Track visits to the site
     num_visits = request.session.get('num_visits', 0)
     request.session['num_visits'] = num_visits + 1
+
     context = {
-        'text_head': text_head,
-        'books': books,
+        'page_obj': page_obj,
         'num_books': num_books,
         'num_instances': num_instances,
         'num_instances_available': num_instances_available,
@@ -130,9 +149,9 @@ def edit_author(request, id):
 
 
 def edit_authors(request):
-    author = Author.objects.all()
+    authors = Author.objects.all()
     context = {
-        'author': author,
+        'authors': authors,
     }
     return render(request, 'catalog/edit_authors.html', context)
 
@@ -158,7 +177,6 @@ def add_author(request):
                 photo=photo
             )
             author.save()
-
             # Redirect to the authors list view
             return HttpResponseRedirect(reverse('authors-list'))
     else:

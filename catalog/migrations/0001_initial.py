@@ -59,7 +59,6 @@ class Migration(migrations.Migration):
                 ('year', models.CharField(help_text='Enter the year of the book', max_length=4, verbose_name='Book Year')),
                 ('summary', models.TextField(help_text='Enter the short summary of the book', max_length=1000, verbose_name='Book Annotation')),
                 ('isbn', models.CharField(help_text='It must contain 13 symbols', max_length=13, verbose_name='ISBN of the Book')),
-                ('price', models.DecimalField(decimal_places=2, help_text='Enter the price of the book', max_digits=7, verbose_name='Price in EUR')),
                 ('photo', models.ImageField(help_text='Enter the cover of the book', upload_to='images', verbose_name='Book Cover')),
                 ('author', models.ManyToManyField(help_text='Enter the author(s) of the book', to='catalog.author', verbose_name='Book Author(s)')),
                 ('genre', models.ForeignKey(help_text='Enter the genre of the book', null=True, on_delete=django.db.models.deletion.CASCADE, to='catalog.genre', verbose_name='Book Genre')),
